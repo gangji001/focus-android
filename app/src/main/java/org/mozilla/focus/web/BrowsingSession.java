@@ -5,6 +5,10 @@
 
 package org.mozilla.focus.web;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
  * A global object keeping the state of the current browsing session.
  *
@@ -21,6 +25,7 @@ public class BrowsingSession {
     }
 
     private boolean isActive;
+    private @Nullable CustomTabConfig customTabConfig;
 
     private BrowsingSession() {}
 
@@ -30,9 +35,31 @@ public class BrowsingSession {
 
     public void stop() {
         isActive = false;
+        customTabConfig = null;
     }
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public void loadCustomTabConfig(final @NonNull Intent intent) {
+        if (!CustomTabConfig.isCustomTabIntent(intent)) {
+            customTabConfig = null;
+            return;
+        }
+
+        customTabConfig = CustomTabConfig.parseCustomTabIntent(intent);
+    }
+
+    public boolean isCustomTab() {
+        return customTabConfig != null;
+    }
+
+    public @NonNull CustomTabConfig getCustomTabConfig() {
+        if (!isCustomTab()) {
+            throw new IllegalStateException("Can't retrieve custom tab config for normal browsing session");
+        }
+
+        return customTabConfig;
     }
 }

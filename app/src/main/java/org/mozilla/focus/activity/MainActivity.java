@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
                 final String url = intent.getDataString();
 
+                BrowsingSession.getInstance().loadCustomTabConfig(intent);
+
                 if (Settings.getInstance(this).shouldShowFirstrun()) {
                     pendingUrl = url;
                     showFirstrun();
@@ -121,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         // We do not care about the previous intent anymore. But let's remember this one.
         setIntent(intent);
+        BrowsingSession.getInstance().loadCustomTabConfig(intent);
     }
 
     @Override
